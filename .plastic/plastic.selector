@@ -1,0 +1,4 @@
+repository "CardGame2D 2025-07-29_19-49-07/CardGame2D@20067362726785@cloud"
+  path "/"
+    br "/main"
+    co "/main"
