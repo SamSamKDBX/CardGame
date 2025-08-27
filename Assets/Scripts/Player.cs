@@ -1,6 +1,13 @@
-public class Player
+using UnityEngine;
+
+public class Player : MonoBehaviour
 {
     private readonly string pseudo;
     private readonly Side side;
-    private readonly Deck deck;
+    [SerializeField] private Deck deck;
+
+    public Deck GetDeck()
+    {
+        return this.deck;
+    }
 }

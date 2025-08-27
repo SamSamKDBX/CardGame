@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class CharacterCard : Card
 {
     [SerializeField] private int invocationPrice;
-    [SerializeField] private int hpMax;
+    [SerializeField] protected int hpMax;
     private int currentHP;
     private int currentSP; // Shield Points
     private LVL currentLVL;
@@ -19,6 +19,12 @@ public abstract class CharacterCard : Card
     }
 
     protected virtual void Awake()
+    {
+        // récupération des pv sur le composant de la carte.
+        SetHpMax();
+    }
+
+    private void SetHpMax()
     {
         var tmps = GetComponentsInChildren<TextMeshProUGUI>(true);
         foreach (var tmp in tmps)
@@ -45,6 +51,7 @@ public abstract class CharacterCard : Card
         UpdateHPText();
     }
 
+    // mise à jour du text de la carte en fonction du nombre réel d'HP
     protected void UpdateHPText()
     {
         if (hpText != null)
