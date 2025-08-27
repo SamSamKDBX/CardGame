@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Deck
+public class Deck : MonoBehaviour
 {
     private List<Card> cards;
 }
