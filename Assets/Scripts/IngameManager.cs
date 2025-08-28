@@ -3,16 +3,25 @@ using UnityEngine;
 
 public class IngameManager : MonoBehaviour
 {
-    private Player player;
-    private Player opponentPlayer;
+    [SerializeField] private Player player;
+    [SerializeField] private Player opponentPlayer;
     private Deck deck; // deck du joueur
     private Deck opponentDeck; // deck de l'adversaire
     void Start()
     {
-        // récupérer les joueurs
-        //player = GameObject.Find("Player");
         // (récupérer les decks de chaque joueur.)
-        this.deck = FindAnyObjectByType<Player>().GetDeck();
+        if (player == null)
+        {
+            Debug.Log("player is null");
+            return;
+        }
+        if (opponentPlayer == null)
+        {
+            Debug.Log("opponentPlayer is null");
+            return;
+        }
+        deck = player.GetDeck();
+        opponentDeck = opponentPlayer.GetDeck();
 
         // 1 : Mélanger les deck
         // 2 : faire piocher une main (a voir pour les cas ou il n'y a pas de carte à poser)

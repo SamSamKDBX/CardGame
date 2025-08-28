@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        deck = deckObject.GetDeck();
+        
     }
 
     public Deck GetDeck()
