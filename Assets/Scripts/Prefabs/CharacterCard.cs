@@ -13,6 +13,17 @@ public abstract class CharacterCard : Card
 
     protected TextMeshProUGUI hpText;
 
+    public void LevelUp()
+    {
+        Debug.Log("Level Up for " + name);
+        // afficher une animation
+        // mettre à jour le niveau
+        if (currentLVL < LVL.LVL3)
+        {
+            currentLVL++;
+        }
+    }
+
     public override void Play()
     {
         Debug.Log("Play " + name);
@@ -22,18 +33,33 @@ public abstract class CharacterCard : Card
         // 4 : appliquer les effets potentiels 
     }
 
+    private void Select()
+    {
+        // avancer la carte de la caméra
+        // afficher les compétences cachées
+        if (currentLVL >= LVL.LVL2)
+        {
+            transform.Find("SkillsLVL2").gameObject.SetActive(true);
+        }
+        if (currentLVL == LVL.LVL3)
+        {
+            transform.Find("SkillsLVL3").gameObject.SetActive(true);
+        }
+    }
+
     protected virtual void Awake()
     {
         // récupération des pv sur le composant de la carte.
-        SetHpMax();
+        SetAttributes();
     }
 
-    private void SetHpMax()
+    private void SetAttributes()
     {
+        // on récupère le texte des HP
         var tmps = GetComponentsInChildren<TextMeshProUGUI>(true);
         foreach (var tmp in tmps)
         {
-            Debug.Log("found : " + tmp.name);
+            //Debug.Log("found : " + tmp.name);
             if (tmp.name == "HP")
             {
                 hpText = tmp;
@@ -41,6 +67,7 @@ public abstract class CharacterCard : Card
             }
         }
 
+        // on gere les erreurs si le text est invalide
         if (hpText == null)
             Debug.LogWarning($"{name} : Aucun TextMeshProUGUI trouvé pour afficher les PV.");
 
@@ -49,9 +76,11 @@ public abstract class CharacterCard : Card
         if (invocationPrice < 0)
             Debug.LogError($"{name} : InvocationPrice n'est pas initialisé !");
 
+        // on set les attributs
         currentHP = hpMax;
         currentSP = 0;
         currentLVL = LVL.LVL1;
+        // on update le text HP
         UpdateHPText();
     }
 

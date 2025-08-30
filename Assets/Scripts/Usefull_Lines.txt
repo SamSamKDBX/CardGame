@@ -1,0 +1,1 @@
+cardToMove.transform.SetParent(outsideCardCanvas.transform, true);
