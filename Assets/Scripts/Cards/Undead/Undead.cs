@@ -5,7 +5,7 @@ using UnityEngine.U2D.IK;
 
 public class Undead : CharacterCard
 {
-    public override void Play()
+    protected override void Play()
     {
         Debug.Log("Play " + name);
     }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public abstract class CharacterCard : Card
+public class CharacterCard : Card
 {
     [SerializeField] private int invocationPrice;
     [SerializeField] protected int hpMax;
@@ -10,12 +10,15 @@ public abstract class CharacterCard : Card
     private int currentSP; // Shield Points
     private LVL currentLVL;
     protected readonly List<Skill> Skills = new List<Skill>(6);
+    private GameObject SkillsLVL2;
+    private GameObject SkillsLVL3;
 
     protected TextMeshProUGUI hpText;
 
+    [ContextMenu("LevelUp")]
     public void LevelUp()
     {
-        Debug.Log("Level Up for " + name);
+        Debug.Log("Level Up for " + name + " " + currentLVL);
         // afficher une animation
         // mettre à jour le niveau
         if (currentLVL < LVL.LVL3)
@@ -24,7 +27,31 @@ public abstract class CharacterCard : Card
         }
     }
 
-    public override void Play()
+    [ContextMenu("ResetLevel")]
+    public void ResetLevel()
+    {
+        currentLVL = LVL.LVL1;
+    }
+
+    protected override void ShowSkills()
+    {
+        if (currentLVL == LVL.LVL2)
+        {
+            SkillsLVL2.SetActive(true);
+        }
+        if (currentLVL == LVL.LVL3)
+        {
+            SkillsLVL3.SetActive(true);
+        }
+    }
+
+    protected override void HideSkills()
+    {
+            SkillsLVL2.SetActive(true);
+            SkillsLVL3.SetActive(true);
+    }
+
+    protected override void Play()
     {
         Debug.Log("Play " + name);
         // 1 : demander quelles cartes sacrifier
@@ -33,22 +60,9 @@ public abstract class CharacterCard : Card
         // 4 : appliquer les effets potentiels 
     }
 
-    private void Select()
+    protected override void Awake()
     {
-        // avancer la carte de la caméra
-        // afficher les compétences cachées
-        if (currentLVL >= LVL.LVL2)
-        {
-            transform.Find("SkillsLVL2").gameObject.SetActive(true);
-        }
-        if (currentLVL == LVL.LVL3)
-        {
-            transform.Find("SkillsLVL3").gameObject.SetActive(true);
-        }
-    }
-
-    protected virtual void Awake()
-    {
+        base.Awake();
         // récupération des pv sur le composant de la carte.
         SetAttributes();
     }
@@ -80,8 +94,17 @@ public abstract class CharacterCard : Card
         currentHP = hpMax;
         currentSP = 0;
         currentLVL = LVL.LVL1;
+
+        // on récupère les gameobject des skills
+        SkillsLVL2 = transform.GetChild(0).GetChild(7).gameObject;
+        SkillsLVL3 = transform.GetChild(0).GetChild(8).gameObject;
+        
+        if (SkillsLVL2 == null)
+        {
+            Debug.Log("SkillsLVL2 == null");
+        }
         // on update le text HP
-        UpdateHPText();
+            UpdateHPText();
     }
 
     // mise à jour du text de la carte en fonction du nombre réel d'HP
