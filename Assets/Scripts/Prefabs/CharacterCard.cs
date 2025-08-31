@@ -18,13 +18,13 @@ public class CharacterCard : Card
     [ContextMenu("LevelUp")]
     public void LevelUp()
     {
-        Debug.Log("Level Up for " + name + " " + currentLVL);
         // afficher une animation
         // mettre à jour le niveau
         if (currentLVL < LVL.LVL3)
         {
             currentLVL++;
         }
+        Debug.Log("Level Up for " + name + " " + currentLVL);
     }
 
     [ContextMenu("ResetLevel")]
@@ -33,22 +33,36 @@ public class CharacterCard : Card
         currentLVL = LVL.LVL1;
     }
 
+    [ContextMenu("ShowLevel")]
+    public void ShowLevel()
+    {
+        Debug.Log("LVL = " + currentLVL);
+    }
+
     protected override void ShowSkills()
     {
-        if (currentLVL == LVL.LVL2)
+        if (currentLVL >= LVL.LVL2)
         {
             SkillsLVL2.SetActive(true);
+        }
+        else
+        {
+            SkillsLVL2.SetActive(false);
         }
         if (currentLVL == LVL.LVL3)
         {
             SkillsLVL3.SetActive(true);
         }
+        else
+        {
+            SkillsLVL3.SetActive(false);
+        }
     }
 
     protected override void HideSkills()
     {
-            SkillsLVL2.SetActive(true);
-            SkillsLVL3.SetActive(true);
+        SkillsLVL2.SetActive(true);
+        SkillsLVL3.SetActive(true);
     }
 
     protected override void Play()
@@ -98,13 +112,9 @@ public class CharacterCard : Card
         // on récupère les gameobject des skills
         SkillsLVL2 = transform.GetChild(0).GetChild(7).gameObject;
         SkillsLVL3 = transform.GetChild(0).GetChild(8).gameObject;
-        
-        if (SkillsLVL2 == null)
-        {
-            Debug.Log("SkillsLVL2 == null");
-        }
+
         // on update le text HP
-            UpdateHPText();
+        UpdateHPText();
     }
 
     // mise à jour du text de la carte en fonction du nombre réel d'HP

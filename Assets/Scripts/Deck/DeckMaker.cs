@@ -26,23 +26,25 @@ public class DeckMaker : MonoBehaviour
             {
                 instance = Instantiate(undead, deck.transform);
                 instance.name = "Undead";
-                instance.transform.localPosition = Vector3.zero + new Vector3(0, 0, i);
                 cards.Add(instance);
             }
             else if (i < 30 && i >= 10)
             {
                 instance = Instantiate(necromancer, deck.transform);
                 instance.name = "Necromancer";
-                instance.transform.localPosition = Vector3.zero + new Vector3(0, 0, i);
                 cards.Add(instance);
             }
             else if (i < 10)
             {
                 instance = Instantiate(bloodyCemetery, deck.transform);
                 instance.name = "BloodyCemetery";
-                instance.transform.localPosition = Vector3.zero + new Vector3(0, 0, i);
                 cards.Add(instance);
             }
+            else
+            {
+                return;
+            }
+            instance.transform.localPosition = Vector3.zero + new Vector3(0, 0, i);
         }
         // on tri les cartes par nom
         cards.Sort((a, b) => string.Compare(a.name, b.name));

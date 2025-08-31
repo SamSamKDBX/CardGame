@@ -7,28 +7,14 @@ public abstract class Card : MonoBehaviour
 {
     protected Transform lastParent;
 
-    protected Dictionary<string, Transform> cardPlaces;
+    protected Places cardPlaces;
 
     private bool isFrontShowed;
 
     protected virtual void Awake()
     {
         isFrontShowed = true;
-        cardPlaces = new Dictionary<string, Transform>
-        {
-            {"FRONT", GameObject.Find("FrontCardPlace")?.transform},
-            {"DECK", GameObject.Find("DeckPlace")?.transform},
-            {"TRASH", GameObject.Find("TrashPlace")?.transform},
-            {"SUPER_DECK", GameObject.Find("SuperDeckPlace")?.transform},
-            {"SUPER_TRASH", GameObject.Find("SuperTrashPlace")?.transform},
-            {"DEF1", GameObject.Find("DefPlace1")?.transform},
-            {"DEF2", GameObject.Find("DefPlace2")?.transform},
-            {"DEF3", GameObject.Find("DefPlace3")?.transform},
-            {"ATK1", GameObject.Find("AtkPlace1")?.transform},
-            {"ATK2", GameObject.Find("AtkPlace2")?.transform},
-            {"ATK3", GameObject.Find("AtkPlace3")?.transform},
-            {"ATK4", GameObject.Find("AtkPlace4")?.transform},
-        };
+        cardPlaces = GameObject.Find("CardsCanvas").GetComponent<Places>();
     }
 
     protected abstract void Play();
@@ -52,24 +38,23 @@ public abstract class Card : MonoBehaviour
     [ContextMenu("GoToFrontPlace")]
     protected void GoToFrontPlace()
     {
-        ChangePlace(cardPlaces["FRONT"]);
+        ChangePlace(cardPlaces.Get("FRONT"));
     }
 
     [ContextMenu("GoToDeck")]
     protected void GoToDeck()
     {
-        ChangePlace(cardPlaces["DECK"]);
-        ShowBack();
+        ChangePlace(cardPlaces.Get("DECK"));
     }
 
-    protected void ChangePlace(Transform place)
+    [ContextMenu("GoToLastPlace")]
+    protected void GoToLastPlace()
     {
-        // si la carte n'est plus sur visualisation, on cache les compétences
-        if (lastParent == cardPlaces["FRONT"] && this is CharacterCard)
-        {
-            HideSkills();
-        }
+        ChangePlace(lastParent);
+    }
 
+    public void ChangePlace(Transform place)
+    {
         // on récupère la position actuelle pour y revenir potentiellement.
         lastParent = transform.parent;
 
@@ -80,19 +65,27 @@ public abstract class Card : MonoBehaviour
         transform.SetParent(place, false);
 
         // si la carte va dans le deck ou le super deck, on la retourne
-        if (transform.parent == cardPlaces["DECK"] || transform.parent == cardPlaces["SUPER_DECK"])
+        if (place == cardPlaces.Get("DECK") || place == cardPlaces.Get("SUPER_DECK"))
         {
+            Debug.Log("ShowBack");
             ShowBack();
         }
         else
         {
+            Debug.Log("ShowFront");
             ShowFront();
         }
 
         // si on se retrouve en position de visualisation, on affiche les compétences
-        if (place == cardPlaces["FRONT"] && this is CharacterCard)
+        if (place == cardPlaces.Get("FRONT") && this is CharacterCard)
         {
+            Debug.Log("ShowSkills");
             ShowSkills();
+        }
+        else
+        {
+            Debug.Log("HideSkills");
+            HideSkills();
         }
     }
 
@@ -108,12 +101,6 @@ public abstract class Card : MonoBehaviour
             yield return null;
         }
         transform.position = targetPosition;
-    }
-
-    [ContextMenu("GoToLastPlace")]
-    protected void GoToLastPlace()
-    {
-        ChangePlace(lastParent);
     }
 
     protected virtual void ShowSkills() { }
