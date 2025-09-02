@@ -61,8 +61,8 @@ public class CharacterCard : Card
 
     protected override void HideSkills()
     {
-        SkillsLVL2.SetActive(true);
-        SkillsLVL3.SetActive(true);
+        SkillsLVL2.SetActive(false);
+        SkillsLVL3.SetActive(false);
     }
 
     protected override void Play()

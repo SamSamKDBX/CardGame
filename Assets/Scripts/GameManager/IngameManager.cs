@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -30,17 +31,17 @@ public class IngameManager : MonoBehaviour
         deck = player.GetDeck();
         opponentDeck = opponentPlayer.GetDeck();
 
-        // on créer une main
-        hand = new List<Card>();
-        DrawFromDeck(1);
-
         // TODO
         // 1 : Mélanger les deck
         // 2 : faire piocher une main (a voir pour les cas ou il n'y a pas de carte à poser)
+
+        // on créer une main
+        hand = new List<Card>();
+        StartCoroutine(DrawFromDeck(8)); // ⚠️ on lance en coroutine
     }
 
     // piocher un nombre de carte et les ajouter à la main
-    public void DrawFromDeck(int nbOfCards)
+    public IEnumerator DrawFromDeck(int nbOfCards)
     {
         // on pioche les cartes une par une
         for (int i = 0; i < nbOfCards; i++)
@@ -51,9 +52,25 @@ public class IngameManager : MonoBehaviour
             hand.Add(drawnCard);
             // on indique au deck qu'elle est en jeu
             deck.AddIngameCard(drawnCard);
+
             // on bouge la carte de place
-            drawnCard.ChangePlace(cardPlaces.Get("HAND"));
+            yield return StartCoroutine(drawnCard.ChangePlaceCoroutine(cardPlaces.Get("HAND")));
+
+            // petit délai optionnel pour l'effet visuel (0.1–0.2s)
+            yield return new WaitForSeconds(0.15f);
+
+            UpdateHandLayout();
             // TODO : trier la main
+        }
+    }
+
+    private void UpdateHandLayout()
+    {
+        float cardSpacing = 100f; // distance entre cartes
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Vector3 targetPos = new Vector3(i * cardSpacing, 0, 0);
+            hand[i].transform.localPosition = targetPos;
         }
     }
 }
